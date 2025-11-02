@@ -1,8 +1,10 @@
 package org.example.domain;
 
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
-@Component
+@Getter
+@Slf4j
 public class PaymentProcessor {
     private final PaymentGateway gateway;
 
@@ -11,11 +13,8 @@ public class PaymentProcessor {
     }
 
     public void process(double amount) {
-        System.out.println("Using gateway: " + gateway.name());
+        log.info("Using gateway: {}", gateway.name());
         gateway.charge(amount);
     }
 
-    public PaymentGateway getGateway() {
-        return gateway;
-    }
 }

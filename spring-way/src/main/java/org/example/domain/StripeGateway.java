@@ -1,10 +1,13 @@
 package org.example.domain;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class StripeGateway implements PaymentGateway {
 
     @Override
     public void charge(double amount) {
-        System.out.println("[Stripe] Charging " + amount);
+        log.info("[Stripe] Charging {}", amount);
     }
 
     @Override
