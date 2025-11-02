@@ -109,3 +109,14 @@ refactored/
 - Each variant is **self-contained**—no cross-dependencies.
 - Names are consistent across variants so your article can compare files 1:1.
 - You can copy/paste snippets straight into your Medium post.
+
+### Comparing the three approaches:
+
+| Concern         | Manual-Simple | Manual-Way (Factory + DI) | Spring-Way (Full DI)        |
+| --------------- | ------------- | ------------------------- | --------------------------- |
+| Object Creation | Everywhere    | Centralized               | Automated via `@Bean`       |
+| Configuration   | Hardcoded     | File-driven               | Property-driven             |
+| Lifecycle       | Manual        | Manual                    | Managed                     |
+| Extensibility   | Low           | Medium                    | High (Profiles, Conditions) |
+| Testability     | OK            | Better                    | Excellent                   |
+| Maintainability | Painful       | Tolerable                 | Effortless                  |
