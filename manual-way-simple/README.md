@@ -39,8 +39,9 @@ manual-way-simple/
 
 ```bash
 # Compile & run via Maven Exec Plugin
-mvn -q exec:java                   # Default (stripe)
-mvn -q -Dexec.args=paypal exec:java
+mvn -q exec:java                   # Default (Throws exception, you need to specify the payment gateway)
+mvn -q "-Dexec.args=stripe" exec:java
+mvn -q "-Dexec.args=paypal" exec:java
 ```
 
 ### Output
