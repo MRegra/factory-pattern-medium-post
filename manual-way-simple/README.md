@@ -79,15 +79,25 @@ Every payment method must implement this interface — it’s the **abstraction 
 
 ```java
 public class StripeGateway implements PaymentGateway {
-    public void charge(double amount) { System.out.println("[Stripe] Charging " + amount); }
-    public String name() { return "stripe"; }
+    public void charge(double amount) { 
+        System.out.println("[Stripe] Charging " + amount); 
+    }
+    
+    public String name() { 
+        return "stripe"; 
+    }
 }
 ```
 
 ```java
 public class PaypalGateway implements PaymentGateway {
-    public void charge(double amount) { System.out.println("[PayPal] Charging " + amount); }
-    public String name() { return "paypal"; }
+    public void charge(double amount) { 
+        System.out.println("[PayPal] Charging " + amount); 
+    }
+    
+    public String name() { 
+        return "paypal"; 
+    }
 }
 ```
 
