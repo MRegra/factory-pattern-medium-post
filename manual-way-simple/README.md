@@ -184,13 +184,10 @@ But this is exactly where the **pain starts**.
 
 To solve this, we introduce a **Factory Pattern** in the next module:
 
-✅ Centralizes creation logic into a single `PaymentGatewayFactory`.
-
-✅ Removes `if/else` clutter from the rest of the app.
-
-✅ Makes switching implementations as simple as changing one configuration property.
-
-✅ Paves the way for Spring’s `@Bean` and dependency injection system.
+* ✅ Centralizes creation logic into a single `PaymentGatewayFactory`.
+* ✅ Removes `if/else` clutter from the rest of the app.
+* ✅ Makes switching implementations as simple as changing one configuration property.
+* ✅ Paves the way for Spring’s `@Bean` and dependency injection system.
 
 ---
 

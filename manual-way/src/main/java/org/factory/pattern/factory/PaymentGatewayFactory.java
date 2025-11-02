@@ -14,7 +14,9 @@ public class PaymentGatewayFactory {
 
     public PaymentGateway create() {
         String type = config.get("payment.gateway");
-        if (type == null) throw new IllegalArgumentException("Missing 'payment.gateway' property");
+        if (type == null) {
+            throw new IllegalArgumentException("Missing 'payment.gateway' property");
+        }
         return switch (type.toLowerCase()) {
             case "stripe" -> new StripeGateway();
             case "paypal" -> new PaypalGateway();
