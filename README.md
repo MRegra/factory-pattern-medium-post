@@ -53,3 +53,59 @@ Expected console:
 
     Using gateway: stripe
     [Stripe] Charging $49.99
+
+---
+
+# Factory Pattern — Three Clear Variants
+
+This refactor provides **three self-contained implementations**, each with its own package and entry point:
+
+```
+refactored/
+  manual-simple/
+  manual-factory/
+  spring/
+```
+
+## 1) manual-simple
+- **Package:** `com.example.payments.manualsimple`
+- **Idea:** Direct `new` calls and simple `if/else` choosing Stripe or PayPal.
+- **Entry:** `com.example.payments.manualsimple.Main`
+- **Run (example):**
+    - Compile: `javac -d out $(find src/main/java -name "*.java")`
+    - Run: `java -cp out com.example.payments.manualsimple.Main stripe`
+    - Or: `java -cp out com.example.payments.manualsimple.Main paypal`
+
+## 2) manual-factory
+- **Package:** `com.example.payments.manualfactory`
+- **Idea:** Centralize creation in `PaymentGatewayFactory`, choose via `application.properties`.
+- **Entry:** `com.example.payments.manualfactory.Main`
+- **Run:**
+    - Compile: `javac -d out $(find src/main/java -name "*.java")`
+    - Copy resources to classpath root: `cp -r src/main/resources/* out/`
+    - Run: `java -cp out com.example.payments.manualfactory.Main`
+    - Change gateway: edit `src/main/resources/application.properties`
+
+## 3) spring
+- **Package:** `com.example.payments.springway`
+- **Idea:** Use Spring to instantiate beans via `@Configuration + @Bean` and inject them.
+- **Entry:** `com.example.payments.springway.Main`
+- **Run (requires Spring Boot deps in a build tool like Maven/Gradle):**
+    - Add Spring Boot (`spring-boot-starter`) to your build.
+    - Set `payment.gateway=stripe` or `paypal` in `src/main/resources/application.properties`.
+    - Run the app; Spring wires `PaymentGateway` into `PaymentProcessor` for you.
+
+## Concept Mapping
+
+| Concern | Manual-simple | Manual-factory | Spring |
+|---|---|---|---|
+| Creation site | Scattered (every use site) | Centralized factory | `@Bean` methods in config |
+| Selection logic | `if/else` by arg | `Properties` (`application.properties`) | `@Value("${payment.gateway...}")` |
+| DI | Manual via constructor | Manual via constructor | Automated constructor injection |
+| Extensibility | Hard | Easy (add branch) | Easiest (add bean or profile) |
+| Testability | OK but noisy | Better | Best (mock beans) |
+
+## Notes
+- Each variant is **self-contained**—no cross-dependencies.
+- Names are consistent across variants so your article can compare files 1:1.
+- You can copy/paste snippets straight into your Medium post.

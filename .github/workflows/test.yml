@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        module: [manual-way, spring-way]
+        module: [manual-way, spring-way, manual-way-simple]
 
     steps:
       - name: Checkout repository

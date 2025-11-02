@@ -25,6 +25,9 @@ replay_pid*
 
 spring-way/.mvn
 manual-way/.mvn
+manual-way-simple/.mvn
 spring-way/target
 manual-way/target
+manual-way-simple/target
+
 .idea

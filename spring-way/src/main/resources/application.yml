@@ -1,2 +1,2 @@
 payment:
-  gateway: paypal
+  gateway: stripe
