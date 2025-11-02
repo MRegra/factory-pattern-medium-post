@@ -1,17 +1,17 @@
-# 🧩 Manual Way — Simple Version
+# Manual Way — Simple Version
 
 This module represents the **“before”** stage in our journey toward clean, scalable object creation.
 It shows how a naïve implementation of object wiring quickly becomes painful as your project grows.
 
 ---
 
-## ⚙️ What This Module Does
+## What This Module Does
 
 We’re simulating a simple **payment system** that supports two gateways: **Stripe** and **PayPal**.
 
 In this version, each dependency is **manually created** (using `new`) inside the `Main` class.
 
-### 📁 Structure
+### Structure
 
 ```
 manual-way-simple/
@@ -26,7 +26,7 @@ manual-way-simple/
     └── test/java/... (JUnit 5 tests)
 ```
 
-### 🧠 Core Idea
+### Core Idea
 
 * **`PaymentGateway`** — defines a contract with `charge()` and `name()` methods.
 * **`StripeGateway` / `PaypalGateway`** — concrete implementations of that interface.
@@ -35,7 +35,7 @@ manual-way-simple/
 
 ---
 
-## 💻 Example Run
+## Example Run
 
 ```bash
 # Compile & run via Maven Exec Plugin
@@ -59,9 +59,9 @@ Using gateway: stripe
 
 ---
 
-## 🧩 The Implementation (Explained)
+## The Implementation (Explained)
 
-### 1️⃣ The Contract
+### 1. The Contract
 
 ```java
 public interface PaymentGateway {
@@ -74,7 +74,7 @@ Every payment method must implement this interface — it’s the **abstraction 
 
 ---
 
-### 2️⃣ The Implementations
+### 2. The Implementations
 
 ```java
 public class StripeGateway implements PaymentGateway {
@@ -94,7 +94,7 @@ Each gateway knows only how to perform its own operation — simple and isolated
 
 ---
 
-### 3️⃣ The Processor
+### 3. The Processor
 
 ```java
 public class PaymentProcessor {
@@ -114,7 +114,7 @@ It doesn’t care whether it’s Stripe or PayPal — that’s decided elsewhere
 
 ---
 
-### 4️⃣ The Main Pain Point
+### 4. The Main Pain Point
 
 ```java
 public class Main {
@@ -141,7 +141,7 @@ But this is exactly where the **pain starts**.
 
 ---
 
-## ⚠️ The Pain of Manual Wiring
+## The Pain of Manual Wiring
 
 1. **Tight Coupling Everywhere**
 
@@ -169,14 +169,19 @@ But this is exactly where the **pain starts**.
 
 ---
 
-## 🧱 What Comes Next — `manual-way` (Factory Pattern)
+## What Comes Next — `manual-way` (Factory Pattern)
 
 To solve this, we introduce a **Factory Pattern** in the next module:
 
 ✅ Centralizes creation logic into a single `PaymentGatewayFactory`.
+
 ✅ Removes `if/else` clutter from the rest of the app.
+
 ✅ Makes switching implementations as simple as changing one configuration property.
+
 ✅ Paves the way for Spring’s `@Bean` and dependency injection system.
+
+---
 
 Example preview from the next step:
 
@@ -202,7 +207,7 @@ In other words:
 
 ---
 
-## 🧭 Summary
+## Summary
 
 | Aspect          | Manual Way (Simple) | Manual Way (Factory)      | Spring Way                    |
 | --------------- | ------------------- | ------------------------- | ----------------------------- |
@@ -214,7 +219,7 @@ In other words:
 
 ---
 
-### 🧠 Takeaway
+### Takeaway
 
 This version is intentionally **painful** — it forces you to see *why* dependency injection exists.
 When your codebase grows beyond a few classes, managing all those `new` calls manually becomes a nightmare.
