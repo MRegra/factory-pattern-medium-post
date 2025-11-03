@@ -1,122 +1,160 @@
-# Factory Pattern — Manual DI vs Spring Boot
+# Factory Pattern — From Manual DI to Spring Boot
 
 [![Build and Test](https://github.com/MRegra/factory-pattern-medium-post/actions/workflows/test.yml/badge.svg)](https://github.com/MRegra/factory-pattern-medium-post/actions/workflows/test.yml)
 
-Learn the **Factory Design Pattern** by first implementing it **manually** (including a tiny DI container), then mapping the exact concepts to **Spring Boot** (with `@Configuration`/`@Bean`). This repo is designed as both a learning resource and a runnable demo.
+Learn the **Factory Design Pattern** and how it naturally evolves into **Dependency Injection (DI)** — first by implementing it manually (even building your own tiny DI container), then by mapping those exact concepts to **Spring Boot**’s `@Configuration` and `@Bean` system.
+
+This repo complements the Medium post 
+**[Factory Pattern: “How Spring Creates Your Beans”](https://medium.com/@mregra/factory-pattern-how-spring-creates-your-beans)**
+and serves as a runnable, educational demo.
 
 ---
 
-## Repo Structure
+## What You’ll Learn
 
-    factory-pattern-medium-post/
-    ├─ manual-way/ # Plain Java: Factory + tiny DI container
-    └─ spring-way/ # Spring Boot: configuration-driven wiring
+Each module builds on the previous one:
 
+| Stage                                  | Module                                    | What It Teaches                                                         |
+| -------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------- |
+| **1️⃣ Manual-Way-Simple**              | [`manual-way-simple/`](manual-way-simple) | The pain of manual wiring using plain `new` calls.                      |
+| **2️⃣ Manual-Way (Factory + Tiny DI)** | [`manual-way/`](manual-way)               | Introduces the Factory Pattern and a miniature DI container.            |
+| **3️⃣ Spring-Way**                     | [`spring-way/`](spring-way)               | Replaces your manual wiring with Spring Boot’s declarative bean system. |
+
+Each stage is a self-contained Java app showing how abstraction, configuration, and injection evolve — step by step.
 
 ---
 
 ## Requirements
 
-- **Java 21** (Temurin/Zulu/Oracle all fine)
-- **Maven 3.9+**
+* **Java 21+** (Temurin, Zulu, or Oracle all work)
+* **Maven 3.9+**
 
-> Verify:
-> ```bash
-> java -version
-> mvn -version
-> ```
+Verify:
+
+```bash
+java -version
+mvn -version
+```
 
 ---
 
 ## Quick Start
 
-### 1) Run tests (both modules)
-```bash
-# from repo root (matrix build in CI does the same)
-cd manual-way && mvn clean verify
-cd ../spring-way && mvn clean verify
+### Run all tests
 
+```bash
+cd manual-way-simple && mvn clean verify
+cd ../manual-way && mvn clean verify
+cd ../spring-way && mvn clean verify
 ```
 
-### 2) Run the Spring app
+### Run the Spring Boot app
+
 ```bash
 cd spring-way
 mvn spring-boot:run
 ```
 
-Now watch the console output. You can switch the active gateway via:
+You’ll see output like:
 
-    spring-way/src/main/resources/application.properties
-    payment.gateway=stripe   # or: paypal
+```
+Using gateway: stripe
+[Stripe] Charging 49.99
+```
 
-Expected console:
+To switch gateways:
 
-    Using gateway: stripe
-    [Stripe] Charging $49.99
+```properties
+# spring-way/src/main/resources/application.properties
+payment.gateway=paypal
+```
+
+Or override via command line:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="--payment.gateway=paypal"
+```
 
 ---
 
-# Factory Pattern — Three Clear Variants
+## Concept Evolution
 
-This refactor provides **three self-contained implementations**, each with its own package and entry point:
+| Concern              | Manual-Simple             | Manual-Way (Factory + DI)       | Spring-Way (Full DI)                    |
+| -------------------- | ------------------------- | ------------------------------- | --------------------------------------- |
+| Object Creation      | Scattered `new` calls     | Centralized factory             | `@Bean` methods managed by Spring       |
+| Configuration        | Hardcoded                 | Property-driven (custom config) | Property-driven (Spring `@Value`)       |
+| Dependency Injection | Manual constructor wiring | Tiny custom container           | Automatic injection                     |
+| Extensibility        | Low                       | Medium                          | High (Profiles, Conditions, Qualifiers) |
+| Lifecycle            | Manual                    | Partially managed               | Fully managed                           |
+| Testability          | Basic                     | Better                          | Excellent (mock beans, test slices)     |
+| Maintainability      | Painful                   | Tolerable                       | Effortless                              |
+
+---
+
+## Project Layout
 
 ```
-refactored/
-  manual-simple/
-  manual-factory/
-  spring/
+factory-pattern-medium-post/
+├─ manual-way-simple/   # Step 1 – Direct object creation
+│   └── src/main/java/org/manualway/simple/...
+│
+├─ manual-way/          # Step 2 – Factory + mini DI container
+│   └── src/main/java/org/factory/pattern/...
+│
+└─ spring-way/          # Step 3 – Spring Boot with @Bean + @Configuration
+    └── src/main/java/org/example/...
 ```
 
-## 1) manual-simple
-- **Package:** `com.example.payments.manualsimple`
-- **Idea:** Direct `new` calls and simple `if/else` choosing Stripe or PayPal.
-- **Entry:** `com.example.payments.manualsimple.Main`
-- **Run (example):**
-    - Compile: `javac -d out $(find src/main/java -name "*.java")`
-    - Run: `java -cp out com.example.payments.manualsimple.Main stripe`
-    - Or: `java -cp out com.example.payments.manualsimple.Main paypal`
+---
 
-## 2) manual-factory
-- **Package:** `com.example.payments.manualfactory`
-- **Idea:** Centralize creation in `PaymentGatewayFactory`, choose via `application.properties`.
-- **Entry:** `com.example.payments.manualfactory.Main`
-- **Run:**
-    - Compile: `javac -d out $(find src/main/java -name "*.java")`
-    - Copy resources to classpath root: `cp -r src/main/resources/* out/`
-    - Run: `java -cp out com.example.payments.manualfactory.Main`
-    - Change gateway: edit `src/main/resources/application.properties`
+## How This Maps to Spring
 
-## 3) spring
-- **Package:** `com.example.payments.springway`
-- **Idea:** Use Spring to instantiate beans via `@Configuration + @Bean` and inject them.
-- **Entry:** `com.example.payments.springway.Main`
-- **Run (requires Spring Boot deps in a build tool like Maven/Gradle):**
-    - Add Spring Boot (`spring-boot-starter`) to your build.
-    - Set `payment.gateway=stripe` or `paypal` in `src/main/resources/application.properties`.
-    - Run the app; Spring wires `PaymentGateway` into `PaymentProcessor` for you.
+| Concept                | Manual Implementation             | Spring Equivalent                 |
+| ---------------------- | --------------------------------- | --------------------------------- |
+| Factory class          | `PaymentGatewayFactory`           | `@Bean` method in `PaymentConfig` |
+| DI container           | `MyApplicationContext`            | `ApplicationContext`              |
+| Singleton cache        | HashMap in `MyApplicationContext` | Spring-managed scopes             |
+| Config properties      | `app.properties`                  | `application.properties`          |
+| Custom injection logic | Constructor recursion             | Automatic wiring & reflection     |
+| Default fallback       | Custom factory logic              | `@ConditionalOnMissingBean`       |
 
-## Concept Mapping
+---
 
-| Concern | Manual-simple | Manual-factory | Spring |
-|---|---|---|---|
-| Creation site | Scattered (every use site) | Centralized factory | `@Bean` methods in config |
-| Selection logic | `if/else` by arg | `Properties` (`application.properties`) | `@Value("${payment.gateway...}")` |
-| DI | Manual via constructor | Manual via constructor | Automated constructor injection |
-| Extensibility | Hard | Easy (add branch) | Easiest (add bean or profile) |
-| Testability | OK but noisy | Better | Best (mock beans) |
+## Learning Flow
 
-## Notes
-- Each variant is **self-contained**—no cross-dependencies.
-- Names are consistent across variants so your article can compare files 1:1.
-- You can copy/paste snippets straight into your Medium post.
+1. **manual-way-simple** — The naive version.
+   Direct `new` calls and hardcoded logic. Painful, but foundational.
 
-### Comparing the three approaches:
+2. **manual-way** — Introduces a **Factory** and a **tiny DI container** that mimics Spring.
+   You’ll handle constructor injection, singletons, and config-driven creation.
 
-| Concern         | Manual-Simple | Manual-Way (Factory + DI) | Spring-Way (Full DI)        |
-| --------------- | ------------- | ------------------------- | --------------------------- |
-| Object Creation | Everywhere    | Centralized               | Automated via `@Bean`       |
-| Configuration   | Hardcoded     | File-driven               | Property-driven             |
-| Lifecycle       | Manual        | Manual                    | Managed                     |
-| Extensibility   | Low           | Medium                    | High (Profiles, Conditions) |
-| Testability     | OK            | Better                    | Excellent                   |
-| Maintainability | Painful       | Tolerable                 | Effortless                  |
+3. **spring-way** — The real thing.
+   Spring manages object creation, configuration, and lifecycle for you via annotations.
+
+---
+
+## Related Reading
+
+**Medium Article:**
+[Factory Pattern: “How Spring Creates Your Beans”](https://medium.com/@mregra/factory-pattern-how-spring-creates-your-beans)
+
+The post walks through these three modules conceptually — explaining *why* each exists, the *pain points* it solves, and how they build toward Spring Boot’s DI system.
+
+---
+
+## Contributing
+
+This repo is meant for **learning and teaching**.
+If you spot improvements (tests, code clarity, or explanations), feel free to open a PR or comment on the Medium post.
+
+---
+
+## License
+
+MIT — free to use, modify, and share for educational or commercial purposes.
+
+---
+
+**Created by [Marcelo Regra da Silva](https://medium.com/@mregra)**
+
+> “You built the magic manually. Now you understand how Spring does it — elegantly, invisibly, and at scale.”
